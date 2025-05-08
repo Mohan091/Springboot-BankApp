@@ -31,7 +31,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: bankapp-dev
-          IMAGE_TAG: ${{ github.env.short_sha }}
+          IMAGE_TAG: ${{ env.short_sha }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker build -t $REGISTRY/$REPOSITORY:latest .
