@@ -23,7 +23,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
         with:
-          mask-password: 'false'
+          mask-password: 'true'
       - name: Add SHORT_SHA env property with commit short sha
         id: vars
         run: echo "short_sha=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV          
@@ -31,7 +31,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: bankapp-dev
-          IMAGE_TAG: ${{ steps.vars.outputs.short_sha }}
+          IMAGE_TAG: ${{ github.env.short_sha }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker build -t $REGISTRY/$REPOSITORY:latest .
