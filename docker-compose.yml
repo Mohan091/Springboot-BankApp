@@ -18,7 +18,10 @@ services:
       start_period: 30s
 
   application:
-    image: 324048504139.dkr.ecr.us-east-2.amazonaws.com/bankapp-dev:latest
+    environment:
+      - IMAGE_REPOSITORY: 324048504139.dkr.ecr.us-east-2.amazonaws.com/bankapp-dev
+      - IMAGE_TAG: 
+    image: $IMAGE_REPOSITORY:$IMAGE_TAG
     container_name: Bankapp
     environment:
       - SPRING_DATASOURCE_USERNAME=root
