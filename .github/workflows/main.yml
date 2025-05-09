@@ -41,14 +41,14 @@ jobs:
       - name: Set up Docker Compose
         uses: docker/setup-compose-action@v1  
 
-      - name: test the working directiory 
-        run: |
-          pwd && ls 
+      # - name: test the working directiory 
+      #   run: |
+      #     pwd && ls 
 
       - name: Docker Compose Deployment
         uses: hoverkraft-tech/compose-action@v2.2.0
         with:
-          compose-file: ""
+          compose-file: "./docker-compose.yml"
 
 
 
