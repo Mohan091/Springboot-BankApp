@@ -43,7 +43,7 @@ jobs:
 
       - name: Docker Compose Deployment
         run: |
-          docker compose down 
+          docker ps -a
           docker compose up -d 
         env:
           APP_IMAGE_TAG: ${{ env.short_sha }}          
