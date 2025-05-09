@@ -42,9 +42,9 @@ jobs:
         uses: docker/setup-compose-action@v1  
 
       - name: Docker Compose Deployment
-        env:
-          APP_IMAGE_TAG: ${{ env.short_sha }}  
         run: docker compose up -d   
+        env:
+          APP_IMAGE_TAG: ${{ env.short_sha }}          
 
 
 
