@@ -22,9 +22,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/bankapp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       - SPRING_DATASOURCE_PASSWORD=root
-      - APP_IMAGE_REPOSITORY=324048504139.dkr.ecr.us-east-2.amazonaws.com/bankapp-dev
-      - APP_IMAGE_TAG=
-    image: ${APP_IMAGE_REPOSITORY}:${APP_IMAGE_TAG}
+    image: 324048504139.dkr.ecr.us-east-2.amazonaws.com/bankapp-dev:${APP_IMAGE_TAG}
     container_name: Bankapp
     ports:
       - "8080:8080"
