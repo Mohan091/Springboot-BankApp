@@ -1,0 +1,17 @@
+{{- if .Values.persistence.enabled -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "{{ .Values.persistence.name }}-pv"
+  namespace: {{ .Values.namespace }}
+spec:
+  capacity:
+    storage: {{ .Values.persistence.capacity }}
+  volumeMode: Filesystem
+  accessModes:
+    {{- toYaml .Values.persistence.accessModes | nindent 4 }} 
+  persistentVolumeReclaimPolicy: {{ .Values.persistence.persistentVolumeReclaimPolicy }}  # Keeps the PV after the PVC is deleted
+  storageClassName: {{ .Values.persistence.storageClassName }}  # Make sure this matches your cluster's default storage class
+  hostPath:
+    {{ toYaml .Values.persistence.hostPath | nindent 4 }}
+{{ end }}    

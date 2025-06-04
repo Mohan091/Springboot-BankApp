@@ -1,0 +1,132 @@
+# Declare the namespace
+namespace: bankapp
+
+
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+replicaCount: 1
+
+# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+image:
+  repository: "324048504139.dkr.ecr.us-east-2.amazonaws.com/mysql"
+  # This sets the pull policy for images.
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "8.4.5"
+
+# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets:
+  - name: mysql-registry-secret
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+# setting up the labels for Deployments 
+mysql:
+  fullname: mysql
+  selectorLabels:
+    app: mysql
+  labels:
+    app:mysql 
+
+# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: 
+  app: mysql
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+service:
+  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: ClusterIP
+  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+  port: 3306
+
+
+resources: 
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+
+# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+persistence:
+  enabled: true 
+  name: mysql
+  capacity: 10Gi
+  accessModes: 
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  hostPath:
+    path: /mnt/data/mysql
+    type: DirectoryOrCreate
+
+secrets: 
+  - name: MYSQL_ROOT_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: mysql-secret
+        key: MYSQL_ROOT_PASSWORD
+  - name: MYSQL_DATABASE
+    valueFrom:
+      configMapKeyRef:
+        name: mysql-config
+        key: MYSQL_DATABASE        
+  # - name: SPRING_DATASOURCE_PASSWORD     
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: mysql-secret
+  #       key: SPRING_DATASOURCE_PASSWORD
+  # - name: SPRING_DATASOURCE_URL
+  #   valueFrom:
+  #     configMapKeyRef:
+  #       name: mysql-config
+  #       key: SPRING_DATASOURCE_URL
+  # - name: SPRING_DATASOURCE_USERNAME
+  #   valueFrom:
+  #     configMapKeyRef:
+  #       name: mysql-config 
+  #       key: SPRING_DATASOURCE_USERNAME 
+
+
+volumes: 
+- name: mysql-storage
+  persistentVolumeClaim:
+    claimName: mysql-pvc
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: 
+- name: mysql-storage
+  mountPath: "/var/lib/mysql"
+  subPath: mysql-data
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
