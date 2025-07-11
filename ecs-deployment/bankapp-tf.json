@@ -1,0 +1,56 @@
+{
+    "family": "bankapp",
+    "containerDefinitions": [
+        {
+            "name": "bankapp",
+            "image": "324048504139.dkr.ecr.us-east-2.amazonaws.com/bankapp-dev:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "volumesFrom": [],
+            "secrets": [
+                {
+                    "name": "MYSQL_DATABASE",
+                    "valueFrom": "arn:aws:secretsmanager:us-east-2:324048504139:secret:MYSQL_DATABASE-005UQb"
+                },
+                {
+                    "name": "SPRING_DATASOURCE_PASSWORD",
+                    "valueFrom": "arn:aws:secretsmanager:us-east-2:324048504139:secret:SPRING_DATASOURCE_PASSWORD-mydhik"
+                },
+                {
+                    "name": "SPRING_DATASOURCE_USERNAME",
+                    "valueFrom": "arn:aws:secretsmanager:us-east-2:324048504139:secret:SPRING_DATASOURCE_USERNAME-qnaldI"
+                },
+                {
+                    "name": "SPRING_DATASOURCE_URL",
+                    "valueFrom": "arn:aws:secretsmanager:us-east-2:324048504139:secret:SPRING_DATASOURCE_URL-xxiBYd"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/bankapp",
+                    "awslogs-region": "us-east-2",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "systemControls": []
+        }
+    ],
+    "taskRoleArn": "arn:aws:iam::324048504139:role/ecs-task-role",
+    "executionRoleArn": "arn:aws:iam::324048504139:role/ecs-task-execution-role",
+    "networkMode": "awsvpc",
+    "placementConstraints": [],
+    "requiresCompatibilities": [
+        "EC2"
+    ],
+    "cpu": "250",
+    "memory": "512"
+}
