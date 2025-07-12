@@ -44,8 +44,8 @@ jobs:
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
-          task-definition: ecs-deployment/bankapp-tf.json
-          service: bankapp-service-011
+          task-definition: ecs-deployment/bankapp_fargate.json
+          service: bankapp_fargate-service-4f6efs48
           cluster: test-cluster
           wait-for-service-stability: true
             
