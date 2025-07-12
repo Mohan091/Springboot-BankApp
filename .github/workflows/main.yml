@@ -24,8 +24,8 @@ jobs:
         id: vars
         run: |
           echo "short_sha=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV 
-          echo "$GITHUB_ENV"  
-          echo "$short_sha"
+          echo "${{ env.GITHUB_ENV }}"  
+          echo "${{ env.short_sha }}"
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
@@ -44,7 +44,7 @@ jobs:
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
-          task-definition: bankapp.json
+          task-definition: ecs-deployment/bankapp-tf.json
           service: bankapp-service-011
           cluster: test-cluster
           wait-for-service-stability: true
