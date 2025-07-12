@@ -1,10 +1,11 @@
-name: Deployment on Docker container
+name: Deployment on ECS Cluster
 on:
   push:
-    branches: [ mohan ]
+    branches: 
+      - mohan
   pull_request:
-    branches: [ mohan ]
-
+    branches: 
+      - mohan
 jobs:
   Image-build:
     runs-on: ubuntu-latest
@@ -18,15 +19,18 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Add SHORT_SHA env property with commit short sha
+        id: vars
+        run: |
+          echo "short_sha=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV 
+          echo "$GITHUB_ENV"  
+          echo "$short_sha"
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
         with:
-          mask-password: 'true'
-      - name: Add SHORT_SHA env property with commit short sha
-        id: vars
-        run: echo "short_sha=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV          
+          mask-password: 'true'               
       - name: Build, tag, and push docker image to Amazon ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -37,7 +41,13 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:latest .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:latest
-
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: bankapp.json
+          service: bankapp-service-011
+          cluster: test-cluster
+          wait-for-service-stability: true
             
 
 
