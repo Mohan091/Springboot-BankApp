@@ -443,5 +443,3 @@ eksctl delete cluster --name=bankapp --region=us-west-1
 ```
 
 #
-
-## test
